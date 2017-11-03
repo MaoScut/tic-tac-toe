@@ -3,29 +3,40 @@ import ReactDOM from 'react-dom';
 import './index.css';
 
 class Square extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      value: null,
-    };
-  }
   render() {
     return (
-      <button className="square" onClick={() => this.setState({ value: 'X' })}>
-        {this.state.value}
+      <button className="square" onClick={() => this.props.onClick({ value: 'X' })}>
+        {this.props.value}
       </button>
     );
   }
 }
 
 class Board extends React.Component {
-  renderSquare(i) {
-    return <Square value={i} />;
+  constructor(props) {
+    super(props);
+    this.state = {
+      squares: Array(9).fill(null),
+    };
   }
-
+  handleClick(i) {
+    const squares = this.state.squares.slice();
+    squares[i] = 'X';
+    this.setState({
+      squares,
+    });
+  }
+  renderSquare(i) {
+    // 如果换行，括号是必要的，不然js会自动在return后面插入分号，这样子返回值就是空了
+    return (
+      <Square
+        value={this.state.squares[i]}
+        onClick={() => this.handleClick(i)}
+      />
+    );
+  }
   render() {
     const status = 'Next player: X';
-
     return (
       <div>
         <div className="status">{status}</div>
